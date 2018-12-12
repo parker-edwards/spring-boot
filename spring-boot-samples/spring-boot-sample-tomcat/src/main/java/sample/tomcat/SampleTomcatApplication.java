@@ -16,15 +16,21 @@
 
 package sample.tomcat;
 
+import java.net.MalformedURLException;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import com.lightstep.tracer.jre.JRETracer;
+import com.lightstep.tracer.shared.Options;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+
+import io.opentracing.Tracer;
 
 @SpringBootApplication
 public class SampleTomcatApplication {
@@ -52,4 +58,13 @@ public class SampleTomcatApplication {
 		SpringApplication.run(SampleTomcatApplication.class, args);
 	}
 
+	@Bean
+	public io.opentracing.Tracer tracer() throws InterruptedException, MalformedURLException {
+		Options options = new Options.OptionsBuilder()
+				.withAccessToken("insert-access-token")
+				.withComponentName("LightStep Parker Test")
+				.withVerbosity(4)
+				.build();
+		return new JRETracer(options);
+	}
 }
